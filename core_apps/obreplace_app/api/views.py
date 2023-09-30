@@ -6,11 +6,10 @@ from core_apps.obreplace_app.api.serializers import WatchSerializer, StreamPlatf
 from core_apps.obreplace_app.models import WatchList, StreamPlatform
 
 
-class StreamPlatfromAV(APIView):
+class StreamPlatformAV(APIView):
     def get(self, request):
-        print("__pycache__: StreamPlat")
         platform = StreamPlatform.objects.all()
-        serializer = StreamPlatformSerializer(platform, many=True)
+        serializer = StreamPlatformSerializer(platform, many=True, context={'request': request})
 
         return Response(serializer.data)
 
@@ -21,6 +20,29 @@ class StreamPlatfromAV(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class StreamPlatformDetailAV(APIView):
+    def get(self, request, pk):
+        try:
+            platform = StreamPlatform.objects.get(pk=pk)
+        except StreamPlatform.DoesNotExist:
+            return Response({'error': 'Not Found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = StreamPlatformSerializer(platform, context={'request': request})
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        platform = StreamPlatform.objects.get(pk=pk)
+        serializer = StreamPlatformSerializer(platform, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        platform = StreamPlatform.objects.get(pk=pk)
+        platform.delete()
 
 
 class WatchListAV(APIView):
@@ -45,8 +67,8 @@ class WatchDetailAV(APIView):
             watch = WatchList.objects.get(pk=pk)
         except WatchList.DoesNotExist:
             return Response({'Error': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = WatchSerializer(watch)
 
+        serializer = WatchSerializer(watch)
         return Response(serializer.data)
 
     def put(self, request, pk):
