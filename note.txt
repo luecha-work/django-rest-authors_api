@@ -1,0 +1,30 @@
+//create virtual environment -> folder src
+python -m venv venv
+
+// using virtual environment
+linux using => source venv/bin/activate
+windows using => venv\Scripts\activate
+
+// install lib 
+ pip install -r requirements/local.txt
+
+// check Python packages in environment
+pip freeze
+
+//craete project api
+django-admin startproject project-name .
+
+//craete sub project or project app
+python manage.py startapp app_name
+
+//create model entity in app -> models.py
+python manage.py makemigrations
+
+to DB
+python manage.py migrate
+
+//start project
+python manage.py runserver
+
+//create superuser
+python manage.py createsuperuser

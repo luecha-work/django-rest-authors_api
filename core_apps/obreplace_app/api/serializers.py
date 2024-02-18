@@ -1,8 +1,15 @@
 from rest_framework import serializers
-from core_apps.obreplace_app.models import WatchList, StreamPlatform
+from core_apps.obreplace_app.models import WatchList, StreamPlatform, Review
 
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = "__all__"
 
 class WatchSerializer(serializers.ModelSerializer):
+    reviews = ReviewSerializer(many=True, read_only=True)
+    
     class Meta:
         model = WatchList
         fields = '__all__'                         # return all fields
